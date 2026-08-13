@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://healthitem_scene"]
+
+; HealthItem.tscn
+; Item pemulihan nyawa — Area2D dengan visual placeholder bentuk hati/buah.
+; Collision Layer 4, Mask 2 (mendeteksi Player di layer 2).
+
+[ext_resource type="Script" path="res://scripts/HealthItem.gd" id="1_healthitem_script"]
+
+[sub_resource type="RectangleShape2D" id="2_health_shape"]
+size = Vector2(16, 16)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_collect"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 8.0
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 80.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 4.0
+color = Color(1, 1, 1, 1)
+
+; =====================================================================
+; ROOT
+; =====================================================================
+[node name="HealthItem" type="Area2D"]
+collision_layer = 8
+collision_mask  = 2
+monitoring      = true
+monitorable     = false
+script          = ExtResource("1_healthitem_script")
+
+; Collision shape
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("2_health_shape")
+
+; Visual placeholder — kotak hijau-toska (Kelapa Cyber default)
+[node name="Visual" type="ColorRect" parent="."]
+offset_left   = -8.0
+offset_top    = -8.0
+offset_right  =  8.0
+offset_bottom =  8.0
+color         = Color(0.2, 0.9, 0.6, 1.0)
+mouse_filter  = 2
+
+; Label tersembunyi — muncul hanya saat debug
+[node name="Label" type="Label" parent="."]
+position      = Vector2(-24, -20)
+text          = "Kelapa Cyber"
+visible       = false
+
+[node name="CollectParticles" type="GPUParticles2D" parent="."]
+texture_filter = 1
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_collect")
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0

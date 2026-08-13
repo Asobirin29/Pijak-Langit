@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://checkpoint_scene"]
+
+[ext_resource type="Script" path="res://scripts/Checkpoint.gd" id="1_checkpoint_script"]
+
+[sub_resource type="RectangleShape2D" id="2_shape"]
+size = Vector2(32, 64)
+
+[node name="Checkpoint" type="Area2D"]
+script = ExtResource("1_checkpoint_script")
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("2_shape")
+
+[node name="Visual" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -32.0
+offset_right = 8.0
+offset_bottom = 32.0
+color = Color(0.2, 0.9, 0.4, 0.6)
+mouse_filter = 2

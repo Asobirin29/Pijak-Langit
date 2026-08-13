@@ -1,0 +1,49 @@
+﻿[gd_scene load_steps=7 format=3 uid="uid://spike_scene"]
+
+[ext_resource type="Script" path="res://scripts/Spike.gd" id="1_spike_script"]
+[ext_resource type="Script" path="res://scripts/SpikeDraw.gd" id="2_spikedraw_script"]
+
+; --- Collision shape untuk StaticBody2D (alas duri, full-width) ---
+[sub_resource type="RectangleShape2D" id="3_body_shape"]
+; Lebar 16 px, tinggi 4 px — hanya bagian alas / badan bawah duri.
+; Player tidak "nyangkut" di sini karena HurtArea langsung kill.
+size = Vector2(16, 4)
+
+; --- Collision shape untuk HurtArea (hanya ujung tajam ~6 px teratas) ---
+[sub_resource type="RectangleShape2D" id="4_hurt_shape"]
+; Sempit dan pendek: hanya area ujung yang benar-benar "menusuk".
+size = Vector2(8, 6)
+
+; ==========================================================================
+; ROOT NODE
+; ==========================================================================
+[node name="Spike" type="StaticBody2D"]
+; Masukkan layer 1 (world) agar platform bisa mendeteksi tumbukan fisika.
+collision_layer = 1
+collision_mask  = 0
+script = ExtResource("1_spike_script")
+
+; --- Body collision (alas duri) ---
+[node name="Body" type="CollisionShape2D" parent="."]
+; Offset ke bawah agar alas rata dengan posisi node (origin = alas duri).
+position = Vector2(0, -2)
+shape = SubResource("3_body_shape")
+
+; --- HurtArea (ujung tajam) ---
+; Layer 4 = "hazard", mask 2 = "player_hurtbox" (sesuaikan dgn project Anda).
+[node name="HurtArea" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask  = 2
+monitoring = true
+monitorable = false
+
+[node name="HurtShape" type="CollisionShape2D" parent="HurtArea"]
+; Offset ke atas mendekati ujung duri (-17 px dari origin).
+position = Vector2(0, -17)
+shape = SubResource("4_hurt_shape")
+
+; --- Visual placeholder ---
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="SpriteDraw" type="Node2D" parent="Visual"]
+script = ExtResource("2_spikedraw_script")

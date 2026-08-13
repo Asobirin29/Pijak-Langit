@@ -1,0 +1,49 @@
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://vulkanik_tileset"]
+
+; ============================================================
+; TileSet Resource — Bioma 2 "Puncak Vulkanik"
+; Pijak Langit
+;
+; Tile ID & tipe:
+;   0  → Ground      (tanah solid, merah/coklat)   — atlas col 0, row 0
+;   1  → Root        (platform lava, oranye)       — atlas col 1, row 0
+;   2  → Wall        (dinding solid, abu gelap)    — atlas col 2, row 0
+; ============================================================
+
+[ext_resource type="Texture2D" path="res://assets/tilesets/tileset_vulkanik.png" id="1_tex"]
+
+; --- Physics layers ---
+; Layer 0: Solid (ground + wall) — collision_layer=1, Player collision_mask=1
+[sub_resource type="PhysicsMaterial" id="2_phys_ground"]
+
+; --- Atlas source ---
+; TileSetAtlasSource: satu sumber atlas dengan tile_size 16x16, margin 0, separation 0
+[sub_resource type="TileSetAtlasSource" id="3_atlas"]
+texture = ExtResource("1_tex")
+texture_region_size = Vector2i(16, 16)
+margins = Vector2i(0, 0)
+separation = Vector2i(0, 0)
+
+; ---- Tile 0,0 : Ground (solid) ----
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0 = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+; ---- Tile 1,0 : Lava Platform (one-way platform) ----
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0 = PackedVector2Array(-8, -8, 8, -8, 8, -6, -8, -6)
+
+; ---- Tile 2,0 : Solid Wall (stone) ----
+2:0/0 = 0
+2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:0/0/physics_layer_0/angular_velocity = 0.0
+2:0/0/physics_layer_0/polygon_0 = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[resource]
+tile_size = Vector2i(16, 16)
+physics_layer_0/collision_layer = 1
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("3_atlas")

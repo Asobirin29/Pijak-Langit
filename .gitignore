@@ -1,0 +1,13 @@
+# Godot 4 generated files
+.godot/
+.mono/
+
+# Build output
+builds/
+export/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp

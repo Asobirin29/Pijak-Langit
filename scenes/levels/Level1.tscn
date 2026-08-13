@@ -1,0 +1,246 @@
+[gd_scene load_steps=20 format=3 uid="uid://level1_scene"]
+
+; =====================================================================
+; Level1.tscn — "Hutan Akar Gantung" — Level Pengenalan Mekanik
+; =====================================================================
+; Layout singkat (tile 16x16, level 80x13 tiles = 1280x208 px):
+;
+;   ZONA A (col 0..22)  — Tutorial berjalan + FLIP #1
+;     - Lantai solid bawah, dinding batu di col 15-16 (row 5..12)
+;     - Ceiling solid, gap di col 15-16 row 1 → Player flip ke ceiling
+;     - Spike di lantai (col 9) & ceiling (col 11)
+;     - Akar platform (col 7-10, row 9)
+;
+;   ZONA B (col 23..52) — Berjalan di ceiling + FLIP #2
+;     - Ceiling solid dengan gap di col 36-38 → Player flip balik ke lantai
+;     - Lubang spike trap di lantai (col 30-34) + VoidZone di bawahnya
+;     - FlyingEye #1 berpatroli (pos 456, 88)
+;     - Akar platform (col 25-30, row 7) & (col 43-48, row 5)
+;     - Spike di ceiling (col 45, row 2)
+;
+;   ZONA C (col 53..79) — Final stretch + FLIP #3 opsional
+;     - Dinding kecil (col 63-64, row 8..12) → bisa jump/flip lewat
+;     - FlyingEye #2 berpatroli (pos 1096, 168)
+;     - Spike di lantai (col 71, row 12)
+;     - Checkpoint di col 35 (tengah B-C)
+;     - LevelGoal (portal) di col 76-78
+; =====================================================================
+
+[ext_resource type="Script" path="res://scripts/Level1.gd" id="1_level1_script"]
+[ext_resource type="TileSet" path="res://assets/tilesets/HutanAkarGantung.tres" id="2_tileset"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingEye.tscn" id="5_flyingeye"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Spike.tscn" id="6_spike"]
+[ext_resource type="PackedScene" path="res://scenes/levels/VoidZone.tscn" id="7_voidzone"]
+[ext_resource type="Script" path="res://scripts/LevelGoal.gd" id="8_levelgoal_script"]
+[ext_resource type="PackedScene" path="res://scenes/levels/LightShard.tscn" id="9_lightshard"]
+[ext_resource type="PackedScene" path="res://scenes/levels/HealthItem.tscn" id="10_healthitem"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="11_hud"]
+
+; --- TileMap layer data sub-resources ---
+; Layer 0: Ground tiles (tanah solid)
+[sub_resource type="TileMapLayer" id="9_layer_ground"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(720896, 0, 0, 720897, 0, 0, 720898, 0, 0, 720899, 0, 0, 720900, 0, 0, 720949, 0, 0, 720950, 0, 0, 720951, 0, 0, 720952, 0, 0, 720953, 0, 0, 720954, 0, 0, 786432, 0, 0, 786433, 0, 0, 786434, 0, 0, 786435, 0, 0, 786436, 0, 0, 786437, 0, 0, 786438, 0, 0, 786439, 0, 0, 786440, 0, 0, 786441, 0, 0, 786442, 0, 0, 786443, 0, 0, 786444, 0, 0, 786445, 0, 0, 786446, 0, 0, 786449, 0, 0, 786450, 0, 0, 786451, 0, 0, 786452, 0, 0, 786453, 0, 0, 786454, 0, 0, 786455, 0, 0, 786456, 0, 0, 786457, 0, 0, 786458, 0, 0, 786459, 0, 0, 786460, 0, 0, 786461, 0, 0, 786467, 0, 0, 786468, 0, 0, 786469, 0, 0, 786470, 0, 0, 786471, 0, 0, 786474, 0, 0, 786475, 0, 0, 786476, 0, 0, 786477, 0, 0, 786478, 0, 0, 786479, 0, 0, 786480, 0, 0, 786481, 0, 0, 786482, 0, 0, 786483, 0, 0, 786484, 0, 0, 786485, 0, 0, 786486, 0, 0, 786487, 0, 0, 786488, 0, 0, 786489, 0, 0, 786490, 0, 0, 786491, 0, 0, 786492, 0, 0, 786493, 0, 0, 786494, 0, 0, 786497, 0, 0, 786498, 0, 0, 786499, 0, 0, 786500, 0, 0, 786501, 0, 0, 786502, 0, 0, 786503, 0, 0, 786504, 0, 0, 786505, 0, 0, 786506, 0, 0, 786507, 0, 0, 786508, 0, 0, 786509, 0, 0, 786510, 0, 0, 786511, 0, 0)
+
+; Layer 1: Root platform tiles (akar one-way platform)
+[sub_resource type="TileMapLayer" id="10_layer_root"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(327723, 0, 1, 327724, 0, 1, 327725, 0, 1, 327726, 0, 1, 327727, 0, 1, 327728, 0, 1, 393283, 0, 1, 393284, 0, 1, 393285, 0, 1, 393286, 0, 1, 393287, 0, 1, 393288, 0, 1, 393289, 0, 1, 458777, 0, 1, 458778, 0, 1, 458779, 0, 1, 458780, 0, 1, 458781, 0, 1, 458782, 0, 1, 589831, 0, 1, 589832, 0, 1, 589833, 0, 1, 589834, 0, 1, 589880, 0, 1, 589881, 0, 1, 589882, 0, 1, 589883, 0, 1, 589884, 0, 1, 589885, 0, 1, 589886, 0, 1)
+
+; Layer 2: Wall tiles (dinding solid batu)
+[sub_resource type="TileMapLayer" id="11_layer_wall"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(0, 0, 2, 1, 0, 2, 2, 0, 2, 3, 0, 2, 4, 0, 2, 5, 0, 2, 6, 0, 2, 7, 0, 2, 8, 0, 2, 9, 0, 2, 10, 0, 2, 11, 0, 2, 12, 0, 2, 13, 0, 2, 14, 0, 2, 15, 0, 2, 16, 0, 2, 17, 0, 2, 18, 0, 2, 19, 0, 2, 20, 0, 2, 21, 0, 2, 22, 0, 2, 23, 0, 2, 24, 0, 2, 25, 0, 2, 26, 0, 2, 27, 0, 2, 28, 0, 2, 29, 0, 2, 30, 0, 2, 31, 0, 2, 32, 0, 2, 33, 0, 2, 34, 0, 2, 35, 0, 2, 39, 0, 2, 40, 0, 2, 41, 0, 2, 42, 0, 2, 43, 0, 2, 44, 0, 2, 45, 0, 2, 46, 0, 2, 47, 0, 2, 48, 0, 2, 49, 0, 2, 50, 0, 2, 51, 0, 2, 52, 0, 2, 53, 0, 2, 54, 0, 2, 55, 0, 2, 56, 0, 2, 57, 0, 2, 58, 0, 2, 59, 0, 2, 60, 0, 2, 61, 0, 2, 62, 0, 2, 63, 0, 2, 64, 0, 2, 65, 0, 2, 66, 0, 2, 67, 0, 2, 68, 0, 2, 69, 0, 2, 70, 0, 2, 71, 0, 2, 72, 0, 2, 73, 0, 2, 74, 0, 2, 75, 0, 2, 76, 0, 2, 77, 0, 2, 78, 0, 2, 79, 0, 2, 65536, 0, 2, 65537, 0, 2, 65538, 0, 2, 65539, 0, 2, 65540, 0, 2, 65553, 0, 2, 65554, 0, 2, 65555, 0, 2, 65556, 0, 2, 65557, 0, 2, 65558, 0, 2, 65579, 0, 2, 65580, 0, 2, 65581, 0, 2, 65582, 0, 2, 65583, 0, 2, 65584, 0, 2, 65585, 0, 2, 65586, 0, 2, 65587, 0, 2, 65588, 0, 2, 65589, 0, 2, 65590, 0, 2, 65591, 0, 2, 65592, 0, 2, 65593, 0, 2, 65594, 0, 2, 65595, 0, 2, 65596, 0, 2, 65608, 0, 2, 65609, 0, 2, 65610, 0, 2, 65611, 0, 2, 65612, 0, 2, 65613, 0, 2, 65614, 0, 2, 65615, 0, 2, 131072, 0, 2, 131120, 0, 2, 131121, 0, 2, 131122, 0, 2, 131123, 0, 2, 131124, 0, 2, 131144, 0, 2, 131145, 0, 2, 131146, 0, 2, 131147, 0, 2, 131148, 0, 2, 131149, 0, 2, 131150, 0, 2, 131151, 0, 2, 196608, 0, 2, 196687, 0, 2, 262144, 0, 2, 262223, 0, 2, 327680, 0, 2, 327695, 0, 2, 327696, 0, 2, 327720, 0, 2, 327721, 0, 2, 327759, 0, 2, 393216, 0, 2, 393231, 0, 2, 393232, 0, 2, 393256, 0, 2, 393257, 0, 2, 393295, 0, 2, 458752, 0, 2, 458767, 0, 2, 458768, 0, 2, 458792, 0, 2, 458793, 0, 2, 458831, 0, 2, 524288, 0, 2, 524303, 0, 2, 524304, 0, 2, 524328, 0, 2, 524329, 0, 2, 524351, 0, 2, 524352, 0, 2, 524367, 0, 2, 589824, 0, 2, 589839, 0, 2, 589840, 0, 2, 589864, 0, 2, 589865, 0, 2, 589887, 0, 2, 589888, 0, 2, 589903, 0, 2, 655360, 0, 2, 655375, 0, 2, 655376, 0, 2, 655400, 0, 2, 655401, 0, 2, 655423, 0, 2, 655424, 0, 2, 655439, 0, 2, 720911, 0, 2, 720912, 0, 2, 720936, 0, 2, 720937, 0, 2, 720959, 0, 2, 720960, 0, 2, 720975, 0, 2, 786447, 0, 2, 786448, 0, 2, 786472, 0, 2, 786473, 0, 2, 786495, 0, 2, 786496, 0, 2)
+
+; --- CollisionShape for LevelGoal ---
+[sub_resource type="RectangleShape2D" id="12_goal_shape"]
+size = Vector2(32, 64)
+
+; --- CollisionShape for VoidZone ---
+[sub_resource type="RectangleShape2D" id="13_void_shape"]
+size = Vector2(80, 32)
+
+
+; =====================================================================
+; ROOT NODE
+; =====================================================================
+[node name="Level1" type="Node2D"]
+script = ExtResource("1_level1_script")
+
+; =====================================================================
+; TILEMAP — 3 layers: Ground, Root, Wall
+; TileMap menggunakan TileMapLayer sebagai child di Godot 4.3+
+; =====================================================================
+[node name="TileMap" type="Node2D" parent="."]
+
+; Layer 0: Ground (tanah solid)
+[node name="LayerGround" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(720896, 0, 0, 720897, 0, 0, 720898, 0, 0, 720899, 0, 0, 720900, 0, 0, 720949, 0, 0, 720950, 0, 0, 720951, 0, 0, 720952, 0, 0, 720953, 0, 0, 720954, 0, 0, 786432, 0, 0, 786433, 0, 0, 786434, 0, 0, 786435, 0, 0, 786436, 0, 0, 786437, 0, 0, 786438, 0, 0, 786439, 0, 0, 786440, 0, 0, 786441, 0, 0, 786442, 0, 0, 786443, 0, 0, 786444, 0, 0, 786445, 0, 0, 786446, 0, 0, 786449, 0, 0, 786450, 0, 0, 786451, 0, 0, 786452, 0, 0, 786453, 0, 0, 786454, 0, 0, 786455, 0, 0, 786456, 0, 0, 786457, 0, 0, 786458, 0, 0, 786459, 0, 0, 786460, 0, 0, 786461, 0, 0, 786467, 0, 0, 786468, 0, 0, 786469, 0, 0, 786470, 0, 0, 786471, 0, 0, 786474, 0, 0, 786475, 0, 0, 786476, 0, 0, 786477, 0, 0, 786478, 0, 0, 786479, 0, 0, 786480, 0, 0, 786481, 0, 0, 786482, 0, 0, 786483, 0, 0, 786484, 0, 0, 786485, 0, 0, 786486, 0, 0, 786487, 0, 0, 786488, 0, 0, 786489, 0, 0, 786490, 0, 0, 786491, 0, 0, 786492, 0, 0, 786493, 0, 0, 786494, 0, 0, 786497, 0, 0, 786498, 0, 0, 786499, 0, 0, 786500, 0, 0, 786501, 0, 0, 786502, 0, 0, 786503, 0, 0, 786504, 0, 0, 786505, 0, 0, 786506, 0, 0, 786507, 0, 0, 786508, 0, 0, 786509, 0, 0, 786510, 0, 0, 786511, 0, 0)
+
+; Layer 1: Root Platform (akar one-way)
+[node name="LayerRoot" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(327723, 0, 1, 327724, 0, 1, 327725, 0, 1, 327726, 0, 1, 327727, 0, 1, 327728, 0, 1, 393283, 0, 1, 393284, 0, 1, 393285, 0, 1, 393286, 0, 1, 393287, 0, 1, 393288, 0, 1, 393289, 0, 1, 458777, 0, 1, 458778, 0, 1, 458779, 0, 1, 458780, 0, 1, 458781, 0, 1, 458782, 0, 1, 589831, 0, 1, 589832, 0, 1, 589833, 0, 1, 589834, 0, 1, 589880, 0, 1, 589881, 0, 1, 589882, 0, 1, 589883, 0, 1, 589884, 0, 1, 589885, 0, 1, 589886, 0, 1)
+
+; Layer 2: Wall (dinding batu solid)
+[node name="LayerWall" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(0, 0, 2, 1, 0, 2, 2, 0, 2, 3, 0, 2, 4, 0, 2, 5, 0, 2, 6, 0, 2, 7, 0, 2, 8, 0, 2, 9, 0, 2, 10, 0, 2, 11, 0, 2, 12, 0, 2, 13, 0, 2, 14, 0, 2, 15, 0, 2, 16, 0, 2, 17, 0, 2, 18, 0, 2, 19, 0, 2, 20, 0, 2, 21, 0, 2, 22, 0, 2, 23, 0, 2, 24, 0, 2, 25, 0, 2, 26, 0, 2, 27, 0, 2, 28, 0, 2, 29, 0, 2, 30, 0, 2, 31, 0, 2, 32, 0, 2, 33, 0, 2, 34, 0, 2, 35, 0, 2, 39, 0, 2, 40, 0, 2, 41, 0, 2, 42, 0, 2, 43, 0, 2, 44, 0, 2, 45, 0, 2, 46, 0, 2, 47, 0, 2, 48, 0, 2, 49, 0, 2, 50, 0, 2, 51, 0, 2, 52, 0, 2, 53, 0, 2, 54, 0, 2, 55, 0, 2, 56, 0, 2, 57, 0, 2, 58, 0, 2, 59, 0, 2, 60, 0, 2, 61, 0, 2, 62, 0, 2, 63, 0, 2, 64, 0, 2, 65, 0, 2, 66, 0, 2, 67, 0, 2, 68, 0, 2, 69, 0, 2, 70, 0, 2, 71, 0, 2, 72, 0, 2, 73, 0, 2, 74, 0, 2, 75, 0, 2, 76, 0, 2, 77, 0, 2, 78, 0, 2, 79, 0, 2, 65536, 0, 2, 65537, 0, 2, 65538, 0, 2, 65539, 0, 2, 65540, 0, 2, 65553, 0, 2, 65554, 0, 2, 65555, 0, 2, 65556, 0, 2, 65557, 0, 2, 65558, 0, 2, 65579, 0, 2, 65580, 0, 2, 65581, 0, 2, 65582, 0, 2, 65583, 0, 2, 65584, 0, 2, 65585, 0, 2, 65586, 0, 2, 65587, 0, 2, 65588, 0, 2, 65589, 0, 2, 65590, 0, 2, 65591, 0, 2, 65592, 0, 2, 65593, 0, 2, 65594, 0, 2, 65595, 0, 2, 65596, 0, 2, 65608, 0, 2, 65609, 0, 2, 65610, 0, 2, 65611, 0, 2, 65612, 0, 2, 65613, 0, 2, 65614, 0, 2, 65615, 0, 2, 131072, 0, 2, 131120, 0, 2, 131121, 0, 2, 131122, 0, 2, 131123, 0, 2, 131124, 0, 2, 131144, 0, 2, 131145, 0, 2, 131146, 0, 2, 131147, 0, 2, 131148, 0, 2, 131149, 0, 2, 131150, 0, 2, 131151, 0, 2, 196608, 0, 2, 196687, 0, 2, 262144, 0, 2, 262223, 0, 2, 327680, 0, 2, 327695, 0, 2, 327696, 0, 2, 327720, 0, 2, 327721, 0, 2, 327759, 0, 2, 393216, 0, 2, 393231, 0, 2, 393232, 0, 2, 393256, 0, 2, 393257, 0, 2, 393295, 0, 2, 458752, 0, 2, 458767, 0, 2, 458768, 0, 2, 458792, 0, 2, 458793, 0, 2, 458831, 0, 2, 524288, 0, 2, 524303, 0, 2, 524304, 0, 2, 524328, 0, 2, 524329, 0, 2, 524351, 0, 2, 524352, 0, 2, 524367, 0, 2, 589824, 0, 2, 589839, 0, 2, 589840, 0, 2, 589864, 0, 2, 589865, 0, 2, 589887, 0, 2, 589888, 0, 2, 589903, 0, 2, 655360, 0, 2, 655375, 0, 2, 655376, 0, 2, 655400, 0, 2, 655401, 0, 2, 655423, 0, 2, 655424, 0, 2, 655439, 0, 2, 720911, 0, 2, 720912, 0, 2, 720936, 0, 2, 720937, 0, 2, 720959, 0, 2, 720960, 0, 2, 720975, 0, 2, 786447, 0, 2, 786448, 0, 2, 786472, 0, 2, 786473, 0, 2, 786495, 0, 2, 786496, 0, 2)
+
+; =====================================================================
+; PLAYER — mulai di lantai Zona A (col 3, berdiri di lantai row 12)
+; spawn_position diset dari posisi ini
+; =====================================================================
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(56, 160)
+
+; =====================================================================
+; CHECKPOINT — tengah level (col 35, Zona B-C boundary)
+; =====================================================================
+[node name="Checkpoint" parent="." instance=ExtResource("4_checkpoint")]
+position = Vector2(568, 160)
+
+; =====================================================================
+; FLYING EYE #1 — berpatroli di Zona B (ceiling area, y~88)
+; patrol_points di-set via Inspector; default idle di posisi ini
+; =====================================================================
+[node name="FlyingEye1" parent="." instance=ExtResource("5_flyingeye")]
+position = Vector2(456, 88)
+
+; =====================================================================
+; FLYING EYE #2 — berpatroli di Zona C (lantai area, y~168)
+; =====================================================================
+[node name="FlyingEye2" parent="." instance=ExtResource("5_flyingeye")]
+position = Vector2(1096, 168)
+
+; =====================================================================
+; SPIKES — ditempatkan di titik strategis
+; Spike 1: lantai Zona A (col 9) — sebelum blokade, zone walk awal
+; Spike 2: ceiling Zona A (col 11) — saat player berjalan di ceiling
+; Spike 3: tepi lubang Zona B (col 31) — trap saat lubang
+; Spike 4: ceiling Zona B (col 45) — saat di platform akar atas
+; Spike 5: lantai Zona C (col 71) — area final menuju portal
+; =====================================================================
+[node name="Spike1" parent="." instance=ExtResource("6_spike")]
+; Lantai Zona A — duri mengarah ke atas (default orientation)
+position = Vector2(152, 192)
+
+[node name="Spike2" parent="." instance=ExtResource("6_spike")]
+; Ceiling Zona A — duri mengarah ke bawah (flip vertikal)
+; rotation = PI membalik duri (menggantung dari ceiling)
+position = Vector2(184, 16)
+rotation = 3.14159
+
+[node name="Spike3" parent="." instance=ExtResource("6_spike")]
+; Tepi lubang trap Zona B
+position = Vector2(504, 184)
+
+[node name="Spike4" parent="." instance=ExtResource("6_spike")]
+; Ceiling Zona B — menggantung
+position = Vector2(728, 32)
+rotation = 3.14159
+
+[node name="Spike5" parent="." instance=ExtResource("6_spike")]
+; Lantai Zona C sebelum portal
+position = Vector2(1144, 192)
+
+; =====================================================================
+; VOID ZONE — di bawah lubang lantai Zona B (col 30-34)
+; Menangkap player yang jatuh melalui lubang
+; =====================================================================
+[node name="VoidZoneTrap" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(520, 224)
+
+; Void zone batas bawah level keseluruhan (safety net)
+[node name="VoidZoneBottom" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(640, 256)
+
+; Void zone batas atas level keseluruhan (safety net atas — saat gravity terbalik)
+[node name="VoidZoneTop" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(640, -48)
+
+; =====================================================================
+; COLLECTIBLES — LightShard × 5 + HealthItem × 1
+; =====================================================================
+; Koordinat dunia = col × 16, row × 16
+; Level: 80×13 tiles, tile size 16×16 px → 1280×208 px
+;
+; LIGHTSHARD #1 — Zona A lantai (col 7, row 10 → x=120, y=160)
+;   Normal gravity ✓ — mudah, tutorial pengambilan pertama
+; =====================================================================
+[node name="LightShard1" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(120, 160)
+
+; =====================================================================
+; LIGHTSHARD #2 — Zona A CEILING (col 12, row 1 → x=200, y=24)
+;   HANYA bisa diambil saat gravity terbalik! ★
+;   Player harus flip ke ceiling Zona A untuk menjangkaunya.
+; =====================================================================
+[node name="LightShard2" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(200, 24)
+
+; =====================================================================
+; LIGHTSHARD #3 — Zona B CEILING (col 28, row 1 → x=456, y=24)
+;   HANYA bisa diambil saat gravity terbalik! ★
+;   Terletak di atas platform akar ceiling Zona B.
+; =====================================================================
+[node name="LightShard3" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(456, 24)
+
+; =====================================================================
+; LIGHTSHARD #4 — Zona B CEILING dekat Spike (col 43, row 1 → x=696, y=24)
+;   HANYA bisa diambil saat gravity terbalik! ★★ — BERBAHAYA
+;   Berdekatan dengan Spike4 (x=728) — perlu timing cermat saat flip.
+; =====================================================================
+[node name="LightShard4" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(696, 24)
+
+; =====================================================================
+; LIGHTSHARD #5 — Zona C platform tersembunyi (col 62, row 10 → x=992, y=160)
+;   Normal gravity ✓ — tersembunyi di balik platform akar Zona C.
+; =====================================================================
+[node name="LightShard5" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(992, 160)
+
+; =====================================================================
+; HEALTH ITEM — Zona C CEILING tersembunyi (col 68, row 1 → x=1088, y=24)
+;   HANYA bisa diambil saat gravity terbalik + di zona FlyingEye2 ★★★
+;   Titik paling menantang: perlu flip di udara, hindari musuh,
+;   dan kembali ke lantai sebelum VoidZoneTop.
+; =====================================================================
+[node name="HealthItemKelapa" parent="." instance=ExtResource("10_healthitem")]
+position = Vector2(1088, 24)
+
+; =====================================================================
+; LEVEL GOAL — portal akhir level (Area2D)
+; Posisi: col 76-78, row 10-12 (kanan level)
+; =====================================================================
+[node name="LevelGoal" type="Area2D" parent="."]
+position = Vector2(1224, 160)
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("8_levelgoal_script")
+
+[node name="GoalShape" type="CollisionShape2D" parent="LevelGoal"]
+shape = SubResource("12_goal_shape")
+
+; Visual placeholder portal — lingkaran emas bercahaya
+[node name="GoalVisual" type="ColorRect" parent="LevelGoal"]
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1.0, 0.85, 0.0, 0.85)
+mouse_filter = 2
+
+[node name="GoalLabel" type="Label" parent="LevelGoal"]
+position = Vector2(-20, -72)
+text = "GOAL"
+
+[node name="HUD" parent="." instance=ExtResource("11_hud")]
+

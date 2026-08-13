@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://lightshard_scene"]
+
+; LightShard.tscn
+; Collectible shard cahaya — Area2D dengan visual placeholder diamond/crystal.
+; Collision Layer 4, Mask 2 (mendeteksi Player di layer 2).
+
+[ext_resource type="Script" path="res://scripts/LightShard.gd" id="1_lightshard_script"]
+
+[sub_resource type="RectangleShape2D" id="2_shard_shape"]
+size = Vector2(14, 14)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_collect"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 8.0
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 80.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 4.0
+color = Color(0.6, 1, 1, 1)
+
+; =====================================================================
+; ROOT
+; =====================================================================
+[node name="LightShard" type="Area2D"]
+collision_layer = 8
+collision_mask  = 2
+monitoring      = true
+monitorable     = false
+script          = ExtResource("1_lightshard_script")
+
+; Collision shape — kotak kecil berpusat di origin
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("2_shard_shape")
+
+; Visual placeholder — diamond cyan bercahaya (ColorRect diputar 45°)
+[node name="Visual" type="ColorRect" parent="."]
+offset_left   = -7.0
+offset_top    = -7.0
+offset_right  =  7.0
+offset_bottom =  7.0
+rotation      = 0.7854
+color         = Color(0.6, 1.0, 1.0, 1.0)
+mouse_filter  = 2
+
+[node name="CollectParticles" type="GPUParticles2D" parent="."]
+texture_filter = 1
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_collect")
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0

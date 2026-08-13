@@ -1,0 +1,87 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/Level3.gd" id="1_lvl3_script"]
+[ext_resource type="TileSet" path="res://assets/tilesets/HutanAkarGantung.tres" id="2_tileset"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingEye.tscn" id="5_flyingeye"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Spike.tscn" id="6_spike"]
+[ext_resource type="PackedScene" path="res://scenes/levels/VoidZone.tscn" id="7_voidzone"]
+[ext_resource type="PackedScene" path="res://scenes/levels/FallingLava.tscn" id="8_lava"]
+[ext_resource type="Script" path="res://scripts/LevelGoal.gd" id="9_levelgoal_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="10_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/MovingPlatform.tscn" id="11_platform"]
+
+[sub_resource type="RectangleShape2D" id="12_void_shape"]
+size = Vector2(1000, 32)
+
+[sub_resource type="RectangleShape2D" id="13_goal_shape"]
+size = Vector2(32, 64)
+
+[node name="Level3" type="Node2D"]
+script = ExtResource("1_lvl3_script")
+
+[node name="TileMap" type="Node2D" parent="."]
+modulate = Color(0.6, 0.5, 0.5, 1)
+
+[node name="LayerGround" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(720896, 0, 0, 720897, 0, 0, 720898, 0, 0, 720899, 0, 0)
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(32, 128)
+
+[node name="MovingPlatform1" parent="." instance=ExtResource("11_platform")]
+position = Vector2(160, 160)
+waypoints = Array[Vector2]([Vector2(0, 0), Vector2(150, 0)])
+
+[node name="MovingPlatform2" parent="." instance=ExtResource("11_platform")]
+position = Vector2(400, 160)
+waypoints = Array[Vector2]([Vector2(0, 0), Vector2(0, -100)])
+ping_pong = true
+
+[node name="VoidZoneTrap" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(400, 300)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VoidZoneTrap"]
+shape = SubResource("12_void_shape")
+
+[node name="Spike" parent="." instance=ExtResource("6_spike")]
+position = Vector2(320, 160)
+
+[node name="FallingLava" parent="." instance=ExtResource("8_lava")]
+position = Vector2(450, 200)
+fall_direction = Vector2(0, -1)
+fall_speed = 80.0
+
+[node name="FlyingEye" parent="." instance=ExtResource("5_flyingeye")]
+position = Vector2(600, 100)
+patrol_distance = 100.0
+
+[node name="Checkpoint1" parent="." instance=ExtResource("4_checkpoint")]
+position = Vector2(300, 128)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("4_checkpoint")]
+position = Vector2(500, 64)
+
+[node name="LevelGoal" type="Area2D" parent="."]
+position = Vector2(800, 160)
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("9_levelgoal_script")
+is_final_level = true
+
+[node name="GoalShape" type="CollisionShape2D" parent="LevelGoal"]
+shape = SubResource("13_goal_shape")
+
+[node name="GoalVisual" type="ColorRect" parent="LevelGoal"]
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1.0, 0.85, 0.0, 0.85)
+mouse_filter = 2
+
+[node name="HUD" parent="." instance=ExtResource("10_hud")]

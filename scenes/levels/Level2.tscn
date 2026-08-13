@@ -1,0 +1,108 @@
+[gd_scene load_steps=21 format=3 uid="uid://level2_scene"]
+
+[ext_resource type="Script" path="res://scripts/Level1.gd" id="1_level2_script"]
+[ext_resource type="TileSet" path="res://assets/tilesets/PuncakVulkanik.tres" id="2_tileset"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/FlyingEye.tscn" id="5_flyingeye"]
+[ext_resource type="PackedScene" path="res://scenes/levels/Spike.tscn" id="6_spike"]
+[ext_resource type="PackedScene" path="res://scenes/levels/VoidZone.tscn" id="7_voidzone"]
+[ext_resource type="Script" path="res://scripts/LevelGoal.gd" id="8_levelgoal_script"]
+[ext_resource type="PackedScene" path="res://scenes/levels/LightShard.tscn" id="9_lightshard"]
+[ext_resource type="PackedScene" path="res://scenes/levels/HealthItem.tscn" id="10_healthitem"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="11_hud"]
+[ext_resource type="PackedScene" path="res://scenes/levels/FallingLava.tscn" id="12_lava"]
+
+[sub_resource type="RectangleShape2D" id="12_goal_shape"]
+size = Vector2(32, 64)
+
+[node name="Level2" type="Node2D"]
+script = ExtResource("1_level2_script")
+
+[node name="TileMap" type="Node2D" parent="."]
+
+[node name="LayerGround" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(458752, 0, 0, 458753, 0, 0, 458754, 0, 0, 458755, 0, 0, 655367, 0, 0, 655368, 0, 0, 655369, 0, 0, 655370, 0, 0, 655371, 0, 0, 655372, 0, 0, 655373, 0, 0, 655374, 0, 0, 786449, 0, 0, 786450, 0, 0, 786451, 0, 0, 786452, 0, 0, 786488, 0, 0, 786489, 0, 0, 786490, 0, 0, 786491, 0, 0, 786492, 0, 0, 786493, 0, 0, 852042, 0, 0, 852043, 0, 0, 852044, 0, 0, 852045, 0, 0)
+
+[node name="LayerRoot" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(131084, 0, 1, 131086, 0, 1, 131087, 0, 1, 131089, 0, 1, 131126, 0, 1, 131127, 0, 1, 131128, 0, 1, 131129, 0, 1, 131130, 0, 1, 131131, 0, 1, 131132, 0, 1, 131133, 0, 1, 131139, 0, 1, 131140, 0, 1, 131141, 0, 1, 131142, 0, 1, 196636, 0, 1, 196637, 0, 1, 196638, 0, 1, 196639, 0, 1, 196640, 0, 1, 196641, 0, 1, 196642, 0, 1, 196643, 0, 1, 327706, 0, 1, 393240, 0, 1)
+
+[node name="LayerWall" type="TileMapLayer" parent="TileMap"]
+tile_set = ExtResource("2_tileset")
+tile_data = PackedInt32Array(131111, 0, 2, 196647, 0, 2, 262183, 0, 2, 327719, 0, 2, 393226, 0, 2, 393227, 0, 2, 393228, 0, 2, 393229, 0, 2, 393230, 0, 2, 393255, 0, 2, 393268, 0, 2, 393269, 0, 2, 393270, 0, 2, 393271, 0, 2, 393272, 0, 2, 393273, 0, 2, 393274, 0, 2, 393283, 0, 2, 393284, 0, 2, 393285, 0, 2, 393286, 0, 2, 393287, 0, 2, 393288, 0, 2, 458762, 0, 2, 458766, 0, 2, 458791, 0, 2, 458792, 0, 2, 458793, 0, 2, 458794, 0, 2, 458795, 0, 2, 458796, 0, 2, 458819, 0, 2, 458824, 0, 2, 524298, 0, 2, 524302, 0, 2, 524355, 0, 2, 524360, 0, 2, 589834, 0, 2, 589838, 0, 2, 589891, 0, 2, 589896, 0, 2, 655386, 0, 2, 655387, 0, 2, 655388, 0, 2, 655389, 0, 2, 655390, 0, 2, 655391, 0, 2, 655409, 0, 2, 655410, 0, 2, 655411, 0, 2, 655412, 0, 2, 655427, 0, 2, 655428, 0, 2, 655429, 0, 2, 655430, 0, 2, 655431, 0, 2, 655432, 0, 2, 720922, 0, 2, 720927, 0, 2, 786458, 0, 2, 786463, 0, 2, 851994, 0, 2, 851995, 0, 2, 851996, 0, 2, 851997, 0, 2, 851998, 0, 2, 851999, 0, 2)
+
+[node name="LightShard1" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(344, 24)
+[node name="HealthItem1" parent="." instance=ExtResource("10_healthitem")]
+position = Vector2(888, 24)
+[node name="Spike1" parent="." instance=ExtResource("6_spike")]
+position = Vector2(984, 24)
+rotation = 3.141592653589793
+[node name="LightShard2" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(1112, 24)
+[node name="Spike2" parent="." instance=ExtResource("6_spike")]
+position = Vector2(504, 40)
+rotation = 3.141592653589793
+[node name="FallingLava1" parent="." instance=ExtResource("12_lava")]
+position = Vector2(136, 56)
+[node name="Spike3" parent="." instance=ExtResource("6_spike")]
+position = Vector2(200, 88)
+rotation = 3.141592653589793
+[node name="Spike4" parent="." instance=ExtResource("6_spike")]
+position = Vector2(888, 88)
+rotation = 3.141592653589793
+[node name="Spike5" parent="." instance=ExtResource("6_spike")]
+position = Vector2(1128, 88)
+rotation = 3.141592653589793
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(40, 104)
+[node name="Checkpoint" parent="." instance=ExtResource("4_checkpoint")]
+position = Vector2(680, 104)
+[node name="FlyingEye1" parent="." instance=ExtResource("5_flyingeye")]
+position = Vector2(344, 136)
+[node name="FlyingEye2" parent="." instance=ExtResource("5_flyingeye")]
+position = Vector2(536, 136)
+[node name="LevelGoal" type="Area2D" parent="."]
+position = Vector2(1224, 136)
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("8_levelgoal_script")
+
+[node name="GoalShape" type="CollisionShape2D" parent="LevelGoal"]
+shape = SubResource("12_goal_shape")
+
+[node name="GoalVisual" type="ColorRect" parent="LevelGoal"]
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(1.0, 0.85, 0.0, 0.85)
+mouse_filter = 2
+
+[node name="GoalLabel" type="Label" parent="LevelGoal"]
+position = Vector2(-20, -72)
+text = "GOAL"
+[node name="Spike6" parent="." instance=ExtResource("6_spike")]
+position = Vector2(200, 152)
+[node name="Spike7" parent="." instance=ExtResource("6_spike")]
+position = Vector2(1112, 152)
+[node name="LightShard3" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(296, 168)
+[node name="LightShard4" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(952, 168)
+[node name="LightShard5" parent="." instance=ExtResource("9_lightshard")]
+position = Vector2(552, 200)
+[node name="FallingLava2" parent="." instance=ExtResource("12_lava")]
+position = Vector2(696, 200)
+
+[node name="VoidZoneBottom" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(640, 256)
+
+[node name="VoidZoneTop" parent="." instance=ExtResource("7_voidzone")]
+position = Vector2(640, -48)
+
+[node name="HUD" parent="." instance=ExtResource("11_hud")]

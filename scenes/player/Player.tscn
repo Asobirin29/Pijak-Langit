@@ -1,0 +1,111 @@
+[gd_scene load_steps=6 format=3 uid="uid://player_scene"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player_script"]
+[ext_resource type="Script" path="res://scripts/Hurtbox.gd" id="2_hurtbox_script"]
+
+[sub_resource type="RectangleShape2D" id="3_collision_shape"]
+size = Vector2(32, 64)
+
+[sub_resource type="RectangleShape2D" id="4_hurtbox_shape"]
+size = Vector2(28, 60)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_flip"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 16.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = 20.0
+radial_accel_max = 50.0
+scale_min = 2.0
+scale_max = 4.0
+color = Color(1, 1, 1, 0.6)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_death"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 20.0
+spread = 180.0
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 6.0
+color = Color(1, 0, 0, 0.8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_placeholder"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Run",
+"speed": 10.0
+}]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player_script")
+
+[node name="FlipParticles" type="GPUParticles2D" parent="."]
+texture_filter = 1
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_flip")
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.8
+
+[node name="DeathParticles" type="GPUParticles2D" parent="."]
+texture_filter = 1
+emitting = false
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_death")
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.9
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0)
+shape = SubResource("3_collision_shape")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 0)
+sprite_frames = SubResource("SpriteFrames_placeholder")
+animation = &"Idle"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 0)
+enabled = true
+zoom = Vector2(1, 1)
+
+[node name="FlashLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="FlashRect" type="ColorRect" parent="FlashLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+mouse_filter = 2
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("2_hurtbox_script")
+
+[node name="HurtboxShape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, 0)
+shape = SubResource("4_hurtbox_shape")
